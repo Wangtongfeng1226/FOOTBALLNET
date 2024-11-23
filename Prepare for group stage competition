@@ -1,0 +1,9 @@
+from itertools import combinations
+margin = 0.05
+
+world_cup_rankings = rankings.loc[(rankings['rank_date'] == rankings['rank_date'].max()) & 
+                              rankings['country_full'].isin(world_cup.index.unique())]
+world_cup_rankings = world_cup_rankings.set_index(['country_full'])
+
+world_cup['points'] = 0
+world_cup['total_prob'] = 0
