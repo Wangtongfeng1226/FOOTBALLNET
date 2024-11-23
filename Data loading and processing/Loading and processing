@@ -1,0 +1,25 @@
+rankings = pd.read_csv('../input/fifa-international-soccer-mens-ranking-1993now/fifa_ranking.csv')
+matches = pd.read_csv('../input/international-football-results-from-1872-to-2017/results.csv')
+world_cup = pd.read_csv('../input/fifa-worldcup-2018-dataset/World Cup 2018 Dataset.csv')
+
+
+rankings = rankings.loc[:,['rank', 'country_full', 'country_abrv', 'cur_year_avg_weighted', 'rank_date', 
+                         'two_year_ago_weighted', 'three_year_ago_weighted']]
+rankings = rankings.replace({"IR Iran": "Iran"})
+rankings['weighted_points'] =  rankings['cur_year_avg_weighted'] + rankings['two_year_ago_weighted'] + rankings['three_year_ago_weighted']
+rankings['rank_date'] = pd.to_datetime(rankings['rank_date'])
+matches =  matches.replace({'Germany DR': 'Germany', 'China': 'China PR'})
+matches['date'] = pd.to_datetime(matches['date'])
+world_cup = world_cup.loc[:, ['Team', 'Group', 'First match \nagainst', 'Second match\n against', 'Third match\n against']]
+world_cup = world_cup.dropna(how='all')
+world_cup = world_cup.replace({"IRAN": "Iran", 
+                             "Costarica": "Costa Rica", 
+                             "Porugal": "Portugal", 
+                             "Columbia": "Colombia", 
+                             "Korea" : "Korea Republic"})
+world_cup = world_cup.set_index('Team')
+rankings = rankings.set_index(['rank_date'])\
+          .groupby(['country_full'], group_keys=False)\
+          .resample('D').first()\
+          .fillna(method='ffill')\
+          .reset_index()
