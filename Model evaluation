@@ -1,0 +1,64 @@
+model.eval()
+with torch.no_grad():
+    X_test_tensor = torch.tensor(X_test, dtype=torch.float32).unsqueeze(1).to(device)
+    logits = model(X_test_tensor)
+    y_pred_prob = torch.sigmoid(logits).cpu().numpy().ravel()  # 使用Sigmoid转换logits为概率
+
+y_test = np.array(y_test).ravel()
+
+unique_classes = np.unique(y_test)
+if len(unique_classes) < 2:
+    print(f"Warning: Only one class present in y_test ({unique_classes}). ROC AUC score is not defined in that case.")
+else:
+    fpr, tpr, _ = roc_curve(y_test, y_pred_prob)
+    auc = roc_auc_score(y_test, y_pred_prob)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(fpr, tpr, label=f'CNN (AUC = {auc:.2f})')
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend()
+    plt.show()
+
+ input_channels = 1  
+ input_length = X_train_tensor.shape[2] 
+ model_cnn = CNNModel(input_channels, input_length)
+
+ train_and_evaluate_cnn(model_cnn, train_loader, X_test, y_test)
+    
+ from sklearn.linear_model import LogisticRegression
+ from sklearn.tree import DecisionTreeClassifier
+ from sklearn.ensemble import RandomForestClassifier
+ from sklearn.svm import SVC
+ from xgboost import XGBClassifier
+ from sklearn.neural_network import MLPClassifier
+ from sklearn.model_selection import train_test_split
+ from sklearn.metrics import roc_curve, roc_auc_score
+ import matplotlib.pyplot as plt
+
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+ models = {
+     "Decision Tree": DecisionTreeClassifier(),
+     "Random Forest": RandomForestClassifier(),
+     "SVM": SVC(probability=True),
+     "XGBoost": XGBClassifier(),
+     "MLP": MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=1000),
+     "Logistic Regression": LogisticRegression(C=1e-5)
+ }
+
+ plt.figure(figsize=(10, 6))
+ for name, model in models.items():
+     model.fit(X_train, y_train)
+     fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:,1])
+     auc = roc_auc_score(y_test, model.predict_proba(X_test)[:,1])
+     plt.plot(fpr, tpr, label=f'{name} (AUC = {auc:.2f})')
+
+ plt.plot([0, 1], [0, 1], 'k--')
+ plt.xlabel('False Positive Rate')
+ plt.ylabel('True Positive Rate')
+ plt.title('ROC Curve')
+ plt.legend()
+ plt.show() 
