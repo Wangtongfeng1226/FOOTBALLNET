@@ -1,3 +1,0 @@
-rankings = pd.read_csv('../input/fifa-international-soccer-mens-ranking-1993now/fifa_ranking.csv')
-matches = pd.read_csv('../input/international-football-results-from-1872-to-2017/results.csv')
-world_cup = pd.read_csv('../input/fifa-worldcup-2018-dataset/World Cup 2018 Dataset.csv')
