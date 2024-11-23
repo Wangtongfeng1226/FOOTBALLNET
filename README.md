@@ -2,6 +2,10 @@
 
  ### [[Paper](https://github.com/Wangtongfeng1226/Wangtongfeng1226.github.io/blob/main/FOOTBALLNET-%20a%20Deep%20LEARNING%20NETWORK%20for%20FOOTBALL%20COMPETITION%20PREDICTION.pdf)] [[Project Website](https://github.com/Wangtongfeng1226/FOOTBALLNET/)]
 
+<p align='center'>
+<img src="https://github.com/Wangtongfeng1226/FOOTBALLNET/blob/main/image/WechatIMG1785.jpg" width='100%'/>
+</p>
+
 With the advancement of technology, artificial intelligence (AI) and big data have significantly impacted sports communication, particularly in enhancing audience engagement, personalized content recommendations, real-time data analysis, and targeted advertising. Predicting sports outcomes remains a challenging task due to the inherent unpredictability of factors such as player performance, weather, and tactical decisions. Traditional statistical models and machine learning algorithms, like logistic regression and XGBoost, have had limited success in capturing complex patterns in high-dimensional data. This study explores the novel application of convolutional neural networks (CNNs) for predicting sports event outcomes. Leveraging CNNs' ability to identify intricate patterns, the proposed method shows improved accuracy, precision, recall and F1 score compared to six traditional models, achieving up to 93%- 97%, 87.8%-92.2%, 91.5%-96.5% and 90.7-92.9 respectively. Besides, while some fluctuations are influenced by Gaussian noise, the four targets of our model are still much higher than other traditional models, and both could show the stability and reliability of the model. The result indicates that CNN offers a promising method for enhancing sports analytics and permits reliable and accurate predictions of complicated datasets.
 <br/>
 
