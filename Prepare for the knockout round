@@ -1,0 +1,16 @@
+pairing = [0,3,4,7,8,11,12,15,1,2,5,6,9,10,13,14]
+world_cup = world_cup.sort_values(by=['Group', 'points', 'total_prob'], ascending=False).reset_index()
+next_round_wc = world_cup.groupby('Group').nth([0, 1]) # select the top 2
+next_round_wc = next_round_wc.reset_index()
+next_round_wc = next_round_wc.loc[pairing]
+next_round_wc = next_round_wc.set_index('Team')
+
+finals = ['round_of_16', 'quarterfinal', 'semifinal', 'final']
+
+labels = list()
+odds = list()
+
+for f in finals: #遍历所有淘汰赛阶段。
+    print("___Starting of the {}___".format(f))
+    iterations = int(len(next_round_wc) / 2)
+    winners = []
