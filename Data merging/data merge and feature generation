@@ -1,0 +1,15 @@
+matches = matches.merge(rankings, 
+                      left_on=['date', 'home_team'], 
+                      right_on=['rank_date', 'country_full'])
+matches = matches.merge(rankings, 
+                      left_on=['date', 'away_team'], 
+                      right_on=['rank_date', 'country_full'], 
+                      suffixes=('_home', '_away'))
+
+
+matches['rank_difference'] = matches['rank_home'] - matches['rank_away']  
+matches['average_rank'] = (matches['rank_home'] + matches['rank_away'])/2  
+matches['point_difference'] = matches['weighted_points_home'] - matches['weighted_points_away']  
+matches['score_difference'] = matches['home_score'] - matches['away_score'] 
+matches['is_won'] = matches['score_difference'] > 0 
+matches['is_stake'] = matches['tournament'] != 'Friendly'
