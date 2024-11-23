@@ -18,7 +18,7 @@ In GUANGZHOU 2024.
 
  
 # Prerequisite
-- Insert the database.
+- Insert the database
   ```
   import torch
   import torch.nn as nn
@@ -38,6 +38,7 @@ In GUANGZHOU 2024.
   matches = pd.read_csv('../input/international-football-results-from-1872-to-2017/results.csv')
   world_cup = pd.read_csv('../input/fifa-worldcup-2018-dataset/World Cup 2018 Dataset.csv')
   ```
+All the data comes from three datasets: the dataset of FIFA soccer rankings from 1993 to 2018(Tadhg Fitzgerald), International football results from 1872 to 2024(Mart Jürisoo) and FIFA World Cup 2018 dataset(Nuggs).
  - Data preprocessing
   ```
   rankings = rankings.loc[:,['rank', 'country_full', 'country_abrv', 'cur_year_avg_weighted', 'rank_date', 
@@ -61,6 +62,8 @@ In GUANGZHOU 2024.
             .fillna(method='ffill')\
             .reset_index()
    ```
+Data replacement (country names, match date and time formats), time series padding, data merging (home and away teams)
+
 
 # Data merging
 - Match data and ranking data are merged
@@ -82,7 +85,7 @@ In GUANGZHOU 2024.
   matches['is_won'] = matches['score_difference'] > 0 
   matches['is_stake'] = matches['tournament'] != 'Friendly'
   ```
-
+In this study, six factors have been chosen as features, they are "ranking difference", "average rank", "point difference", "score difference", "is won" and "is stake". 
 # Model training and prediction
 - Definition of model
     ```
@@ -117,6 +120,7 @@ In GUANGZHOU 2024.
     X = matches[feature_columns].fillna(0).values.astype(np.float32)
     y = matches['is_won'].astype(float).fillna(0).values.astype(np.float32)
     ```
+    This code defines a 1D CNN model for predicting match outcomes based on features like rank difference, score difference, and point difference. The model includes three convolutional layers, max pooling, dropout, and two fully connected layers, enabling it to extract local patterns from input data. The forward method performs the forward pass, while predict_proba outputs probabilities for both winning and losing. Features and target variables are preprocessed to ensure compatibility. The model is designed for binary classification and can be optimized further by adding features or tuning hyperparameters to improve prediction accuracy.
 - Data preparation
     ```
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -128,6 +132,8 @@ In GUANGZHOU 2024.
     train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     ```
+  This code splits data into training and testing sets, converts them into PyTorch tensors with added channel dimensions, and creates a DataLoader with batch processing and shuffling for efficient model training.
+  
 - Model training
     ```
     def train_and_evaluate_cnn(model, train_loader, X_test, y_test, learning_rate=0.001, epochs=100):
@@ -152,6 +158,7 @@ In GUANGZHOU 2024.
         epoch_loss = running_loss / len(train_loader.dataset)
         print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}')
      ```
+    This function trains a CNN model using BCEWithLogitsLoss, the Adam optimizer, and GPU if available. It processes batches from a DataLoader, performs forward and backward passes, updates parameters, and prints epoch-wise loss for progress tracking.
 - Model evaluation
     ```
     model.eval()
@@ -219,6 +226,7 @@ In GUANGZHOU 2024.
      plt.legend()
      plt.show() 
      ```
+    This code evaluates a CNN model and compares it with traditional machine learning classifiers (e.g., Decision Tree, Random Forest, SVM, XGBoost, MLP, Logistic Regression) using ROC curves and AUC scores. The CNN evaluation involves converting test data to tensors, generating probabilities via the Sigmoid function, and plotting the ROC curve. For traditional classifiers, models are trained using scikit-learn, and their ROC curves and AUC values are computed based on test predictions. The performance of all models is visualized, highlighting their ability to distinguish between classes. 
 
  # Group stage simulation
  - Prepare for group stage competition
@@ -275,6 +283,7 @@ In GUANGZHOU 2024.
         print("{} vs. {}: ".format(home, away), end='')
         prepare_data_for_cnn(home, away, world_cup, world_cup_rankings, model_cnn)
     ```
+    This code simulates all group stage matches using a CNN model to predict outcomes based on team rankings and features. It calculates points and total probabilities for each team. Matches are categorized into home win, away win, or draw based on the predicted probabilities and a defined margin. The final standings can be derived from the world_cup DataFrame after all matches are processed. This method provides a data-driven approach to simulate and analyze tournament outcomes.
  # Knockout simulation
  - Prepare for the knockout round
     ```
@@ -346,3 +355,5 @@ In GUANGZHOU 2024.
                 
     next_round_wc = next_round_wc.loc[winners]
     print("\n")
+    ```
+    This code efficiently simulates the knockout stages of a tournament using a CNN model for predictions. It calculates features for each match, predicts outcomes, determines winners, and progresses them to the next round. Match results, odds, and labels are stored for analysis or visualization, enabling both competitive insights and predictive analytics for tournament simulation.
