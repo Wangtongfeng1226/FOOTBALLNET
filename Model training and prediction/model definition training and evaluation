@@ -1,0 +1,129 @@
+class CNNModel(nn.Module):
+def __init__(self, input_channels, input_length):
+    super(CNNModel, self).__init__()
+    self.conv1 = nn.Conv1d(input_channels, 16, kernel_size=3, padding=1)
+    self.conv2 = nn.Conv1d(16, 32, kernel_size=3, padding=1)
+    self.conv3 = nn.Conv1d(32, 64, kernel_size=3, padding=1)
+    self.pool = nn.MaxPool1d(kernel_size=2, stride=2)
+    self.fc1 = nn.Linear(64, 64)  
+    self.fc2 = nn.Linear(64, 1)
+    self.dropout = nn.Dropout(p=0.5)
+
+def forward(self, x):
+    x = self.pool(torch.relu(self.conv1(x)))
+    x = self.pool(torch.relu(self.conv2(x)))
+    x = torch.relu(self.conv3(x))
+    x = x.view(x.size(0), -1)  # Flatten for fully connected layers
+    x = self.dropout(torch.relu(self.fc1(x)))
+    x = torch.sigmoid(self.fc2(x))
+    return x
+
+def predict_proba(self, X):
+    self.eval()
+    with torch.no_grad():
+        inputs = torch.tensor(X, dtype=torch.float32).unsqueeze(1)
+        outputs = self.forward(inputs)
+        return torch.cat((1 - outputs, outputs), dim=1).numpy()
+    
+feature_columns = ['rank_difference', 'average_rank', 'point_difference', 'score_difference', 'is_stake']
+X = matches[feature_columns].fillna(0).values.astype(np.float32)
+y = matches['is_won'].astype(float).fillna(0).values.astype(np.float32)
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train_tensor = torch.tensor(X_train, dtype=torch.float32).unsqueeze(1)  
+y_train_tensor = torch.tensor(y_train, dtype=torch.float32).unsqueeze(1)
+X_test_tensor = torch.tensor(X_test, dtype=torch.float32).unsqueeze(1)
+y_test_tensor = torch.tensor(y_test, dtype=torch.float32).unsqueeze(1)
+
+train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+
+def train_and_evaluate_cnn(model, train_loader, X_test, y_test, learning_rate=0.001, epochs=100):
+criterion = nn.BCEWithLogitsLoss()  
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)  
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
+
+for epoch in range(epochs):
+    model.train()
+    running_loss = 0.0
+    for X_batch, y_batch in train_loader:
+        X_batch, y_batch = X_batch.to(device), y_batch.to(device)
+        optimizer.zero_grad()
+        outputs = model(X_batch)
+        loss = criterion(outputs, y_batch)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item() * X_batch.size(0)
+    
+    epoch_loss = running_loss / len(train_loader.dataset)
+    print(f'Epoch [{epoch+1}/{epochs}], Loss: {epoch_loss:.4f}')
+
+
+model.eval()
+with torch.no_grad():
+    X_test_tensor = torch.tensor(X_test, dtype=torch.float32).unsqueeze(1).to(device)
+    logits = model(X_test_tensor)
+    y_pred_prob = torch.sigmoid(logits).cpu().numpy().ravel()  
+
+y_test = np.array(y_test).ravel()
+
+unique_classes = np.unique(y_test)
+if len(unique_classes) < 2:
+    print(f"Warning: Only one class present in y_test ({unique_classes}). ROC AUC score is not defined in that case.")
+else:
+    fpr, tpr, _ = roc_curve(y_test, y_pred_prob)
+    auc = roc_auc_score(y_test, y_pred_prob)
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(fpr, tpr, label=f'CNN (AUC = {auc:.2f})')
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.legend()
+    plt.show()
+
+ input_channels = 1  
+ input_length = X_train_tensor.shape[2] 
+ model_cnn = CNNModel(input_channels, input_length)
+
+ train_and_evaluate_cnn(model_cnn, train_loader, X_test, y_test)
+    
+ from sklearn.linear_model import LogisticRegression
+ from sklearn.tree import DecisionTreeClassifier
+ from sklearn.ensemble import RandomForestClassifier
+ from sklearn.svm import SVC
+ from xgboost import XGBClassifier
+ from sklearn.neural_network import MLPClassifier
+ from sklearn.model_selection import train_test_split
+ from sklearn.metrics import roc_curve, roc_auc_score
+ import matplotlib.pyplot as plt
+
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+ models = {
+     "Decision Tree": DecisionTreeClassifier(),
+     "Random Forest": RandomForestClassifier(),
+     "SVM": SVC(probability=True),
+     "XGBoost": XGBClassifier(),
+     "MLP": MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=1000),
+     "Logistic Regression": LogisticRegression(C=1e-5)
+ }
+
+ plt.figure(figsize=(10, 6))
+ for name, model in models.items():
+     model.fit(X_train, y_train)
+     fpr, tpr, _ = roc_curve(y_test, model.predict_proba(X_test)[:,1])
+     auc = roc_auc_score(y_test, model.predict_proba(X_test)[:,1])
+     plt.plot(fpr, tpr, label=f'{name} (AUC = {auc:.2f})')
+
+ plt.plot([0, 1], [0, 1], 'k--')
+ plt.xlabel('False Positive Rate')
+ plt.ylabel('True Positive Rate')
+ plt.title('ROC Curve')
+ plt.legend()
+ plt.show() 
