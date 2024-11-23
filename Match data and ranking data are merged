@@ -1,7 +1,0 @@
-matches = matches.merge(rankings, 
-                      left_on=['date', 'home_team'], 
-                      right_on=['rank_date', 'country_full'])
-matches = matches.merge(rankings, 
-                      left_on=['date', 'away_team'], 
-                      right_on=['rank_date', 'country_full'], 
-                      suffixes=('_home', '_away'))
