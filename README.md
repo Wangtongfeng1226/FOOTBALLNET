@@ -1,6 +1,6 @@
  # [CISTPA 2024] FOOTBALLNET: a Deep LEARNING NETWORK for FOOTBALL COMPETITION PREDICTION
 
- ### [[Paper](https://github.com/Wangtongfeng1226/Wangtongfeng1226.github.io/blob/main/FOOTBALLNET-%20a%20Deep%20LEARNING%20NETWORK%20for%20FOOTBALL%20COMPETITION%20PREDICTION.pdf)] [[Project Website](https://github.com/Wangtongfeng1226/FOOTBALLNET/)]
+ ### [[Paper](https://github.com/Wangtongfeng1226/FOOTBALLNET/blob/main/FOOTBALLNET%202/icstpa2024-37-2.pdf)] [[Project Website](https://github.com/Wangtongfeng1226/FOOTBALLNET/)]
 
 <p align='center'>
 <img src="https://github.com/Wangtongfeng1226/FOOTBALLNET/blob/main/image/WechatIMG1785.jpg" width='100%'/>
